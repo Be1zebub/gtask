@@ -54,8 +54,7 @@ local function CallTask(index, curtime)
     return false
 end
 
-local function CallTickTask(index)
-    local data = tick_stored[index]
+local function CallTickTask(index, data)
     if data == nil then return false end
 
     data.func()
