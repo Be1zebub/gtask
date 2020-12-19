@@ -85,6 +85,7 @@ module("gtask")
 ---@param time number
 ---@param func function
 ---@param repeats number
+---@return taskid number
 function Create(time, func, repeats)
     assert(isnumber(time), "<time> should be a number")
     assert(isfunction(func), "<func> must be a function")
@@ -106,6 +107,7 @@ end
 --- Create a tick-task (1 tick = 1 task running)
 ---@param time number
 ---@param func function
+---@return ticktaskid number
 function CreateTick(time, func, repeats)
     assert(isnumber(time), "<time> should be a number")
     assert(isfunction(func), "<func> must be a function")
@@ -121,12 +123,15 @@ end
 
 --- Force call task by index
 ---@param index number
+---@param isticktask boolean
+---@return issucess boolean
 function Call(index, tick)
     return (tick and CallTickTask or CallTask)(index, tick and CurTime())
 end
 
 --- Remove task by index
 ---@param index number
+---@return removedtask table
 function Remove(index, tick)
     return remove(tick and tick_stored or stored, index)
 end
