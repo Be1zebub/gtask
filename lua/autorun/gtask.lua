@@ -132,7 +132,8 @@ function Remove(index, tick)
 end
 
 --- Return all tasks
----@return table
+---@return tasks table
+---@return ticktasks table
 function GetTable()
     return stored, tick_stored
 end
