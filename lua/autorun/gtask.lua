@@ -86,6 +86,7 @@ gtask = {}
 ---@param time number
 ---@param func function
 ---@param repeats number
+---@param onfinish function
 function gtask.Create(time, func, repeats, onfinish)
     assert(isnumber(time), "<time> should be a number")
     assert(isfunction(func), "<func> must be a function")
@@ -110,12 +111,14 @@ end
 ---@param time number
 ---@param func function
 ---@param repeats number
-function gtask.CreateNamed(name, time, func, repeats)
+---@param onfinish function
+function gtask.CreateNamed(name, time, func, repeats, onfinish)
     if named_tasks[name] then
         gtask.Remove(named_tasks[name])
     end
     named_tasks[name] = gtask.Create(time, func, repeats, function()
         named_tasks[name] = nil
+        if onfinish then onfinish() end
     end)
 end
 
@@ -149,6 +152,15 @@ end
 ---@return removedtask table
 function gtask.Remove(index, tick)
     return remove(tick and tick_stored or stored, index)
+end
+
+--- Remove named task
+---@param name string
+---@return removedtask table
+function gtask.RemoveNamed(name)
+    if named_tasks[name] then
+        return gtask.Remove(named_tasks[name])
+    end
 end
 
 --- Return all tasks
