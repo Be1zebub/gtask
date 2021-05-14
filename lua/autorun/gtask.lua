@@ -1,7 +1,7 @@
 --[[
 MIT License
 
-Copyright (c) 2020 Aleksandrs Filipovskis & Be1zebub
+Copyright (c) 2021 Aleksandrs Filipovskis & Be1zebub
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@ SOFTWARE.
 
 local remove, CurTime, isstring, isnumber, isfunction, assert, next = table.remove, CurTime, isstring, isnumber, isfunction, assert, next
 
-local stored, tick_stored = {}, {}
+local stored, tick_stored, named_tasks = {}, {}, {}
 
 local function CallTask(index, curtime)
     local data = stored[index]
@@ -44,6 +44,7 @@ local function CallTask(index, curtime)
 
         if repeats < 1 then
             remove(stored, index)
+            if data.onfinish then data.onfinish() end
         else
             data.repeats = repeats
         end
@@ -79,14 +80,13 @@ hook.Add("Think", "gtask.Think", function()
     )
 end)
 
-module("gtask")
+gtask = {}
 
 --- Create a task
 ---@param time number
 ---@param func function
 ---@param repeats number
----@return taskid number
-function Create(time, func, repeats)
+function gtask.Create(time, func, repeats, onfinish)
     assert(isnumber(time), "<time> should be a number")
     assert(isfunction(func), "<func> must be a function")
 
@@ -99,16 +99,31 @@ function Create(time, func, repeats)
         func = func,
         repeats = repeats,
         infinite = repeats == 0,
+        onfinish = onfinish
     }
     
     return id
+end
+
+--- Create a named task
+---@param name string
+---@param time number
+---@param func function
+---@param repeats number
+function gtask.CreateNamed(name, time, func, repeats)
+    if named_tasks[name] then
+        gtask.Remove(named_tasks[name])
+    end
+    named_tasks[name] = gtask.Create(time, func, repeats, function()
+        named_tasks[name] = nil
+    end)
 end
 
 --- Create a tick-task (1 tick = 1 task running)
 ---@param time number
 ---@param func function
 ---@return ticktaskid number
-function CreateTick(time, func, repeats)
+function gtask.CreateTick(time, func, repeats)
     assert(isnumber(time), "<time> should be a number")
     assert(isfunction(func), "<func> must be a function")
 
@@ -125,20 +140,20 @@ end
 ---@param index number
 ---@param isticktask boolean
 ---@return issucess boolean
-function Call(index, tick)
+function gtask.Call(index, tick)
     return (tick and CallTickTask or CallTask)(index, tick and CurTime())
 end
 
 --- Remove task by index
 ---@param index number
 ---@return removedtask table
-function Remove(index, tick)
+function gtask.Remove(index, tick)
     return remove(tick and tick_stored or stored, index)
 end
 
 --- Return all tasks
 ---@return tasks table
 ---@return ticktasks table
-function GetTable()
+function gtask.GetTable()
     return stored, tick_stored
 end
