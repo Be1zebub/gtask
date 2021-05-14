@@ -167,6 +167,7 @@ end
 --- Return all tasks
 ---@return tasks table
 ---@return ticktasks table
+---@return namedtasks tabke
 function gtask.GetTable()
-    return stored, tick_stored
+    return stored, tick_stored, named_tasks
 end
