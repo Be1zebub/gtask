@@ -113,9 +113,8 @@ end
 ---@param repeats number
 ---@param onfinish function
 function gtask.CreateNamed(name, time, func, repeats, onfinish)
-    if named_tasks[name] then
-        gtask.Remove(named_tasks[name])
-    end
+    gtask.RemoveNamed(name)
+    
     named_tasks[name] = gtask.Create(time, func, repeats, function()
         named_tasks[name] = nil
         if onfinish then onfinish() end
