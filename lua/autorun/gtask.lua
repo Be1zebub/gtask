@@ -114,7 +114,7 @@ end
 ---@param onfinish function
 function gtask.CreateNamed(name, time, func, repeats, onfinish)
     gtask.RemoveNamed(name)
-    
+
     named_tasks[name] = gtask.Create(time, func, repeats, function()
         named_tasks[name] = nil
         if onfinish then onfinish() end
@@ -157,8 +157,10 @@ end
 ---@param name string
 ---@return removedtask table
 function gtask.RemoveNamed(name)
-    if named_tasks[name] then
-        return gtask.Remove(named_tasks[name])
+    local index = named_tasks[name]
+    if index then
+        named_tasks[name] = nil
+        return gtask.Remove(index)
     end
 end
 
