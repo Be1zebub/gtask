@@ -24,6 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 --]]
 
+if gtask then return end
+
 local remove, CurTime, isstring, isnumber, isfunction, assert, next = table.remove, CurTime, isstring, isnumber, isfunction, assert, next
 
 local stored, tick_stored, named_tasks = {}, {}, {}
