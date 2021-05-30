@@ -1,3 +1,5 @@
+-- https://github.com/Be1zebub/gtask/blob/master/lua/autorun/gtask.lua
+
 --[[
 MIT License
 
